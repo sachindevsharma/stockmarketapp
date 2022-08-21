@@ -6,33 +6,21 @@ from helper_functions import *
 
 def callbacks_tab5(app):
     @app.callback([Output('headlines', 'children'), Output('headlines_time', 'children')],
-                 [Input('i5', 'n_intervals')])
+                 [Input('i60', 'n_intervals')])
     def get_headlines(n):
-        headlines = get_top10_headlines()
-        table = html.Table(className="table_news", children=[
-                    html.Tr(children=[
-                                html.Td(children=[
-                                    html.A( className="td-link",
-                                            children=i["description"],
-                                            href=i["url"],
-                                            target="_blank",)
-                                    ])
-                            ]) for i in headlines ])
+            headlines = get_top10_headlines()
         
-        card = dbc.Card([
-                # dbc.CardImg(src="/static/images/placeholder286x180.png", top=True),
-                dbc.CardBody([
-                    html.H4("Card title", className="card-title"),
-                    html.P(
-                        "Some quick example text to build on the card title and "
-                        "make up the bulk of the card's content.",
-                        className="card-text",
-                    ),
-                    dbc.Button("Go somewhere", color="primary"),
-                    ]
-                ),
-            ],
-            style={"width": "18rem"},
-        )
+            # source (id, author), author, title, description, url, urlToImage, , publishedAt, content
+            urlToImage = headlines[0]
+            
+            card = dbc.Row([dbc.Card(className="card_div",  color="light", children=[
+                        dbc.CardImg(src=item["urlToImage"], top=True),
+                        dbc.CardBody([
+                            html.H4(item["title"], className="card-title"),
+                            html.P(item["description"], className="card-text"),
+                            dbc.Button(dbc.CardLink("See News", href=item["url"], class_name="news_card_link"), color="primary"),
+                        ]),
+                    ], )
+                    for item in headlines])
 
-        return [card, "Last update : " + datetime.now().strftime("%H:%M:%S")]
+            return [card, "Last update : " + datetime.now().strftime("%H:%M:%S")]

@@ -4,7 +4,7 @@ import gunicorn                     #whilst your local machine's webserver doesn
 from whitenoise import WhiteNoise   #for serving static files on Heroku
 
 from layouts import Layout
-from callbacks import callbacks
+from callbacks import Callbacks
 
 app = Dash(__name__, 
            update_title=None,
@@ -13,14 +13,13 @@ app = Dash(__name__,
 
 app.config["suppress_callback_exceptions"] = True
 
-# Reference the underlying flask app (Used by gunicorn webserver in Heroku production deployment)
 server = app.server 
 
 # Enable Whitenoise for serving static files from Heroku (the /static folder is seen as root by Heroku) 
-server.wsgi_app = WhiteNoise(server.wsgi_app, root='static/') 
+# server.wsgi_app = WhiteNoise(server.wsgi_app, root='static/') 
 
 app.layout = Layout(app)
-callbacks(app)
+Callbacks(app)
 
 if __name__ == "__main__":
     app.run_server(debug=False, port=8050)

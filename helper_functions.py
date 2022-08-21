@@ -18,18 +18,13 @@ dropdown_values = [
 
 def format_top_movers(data):
     '''formatting the top movers data'''
+    
     columns =  [{'name':'SYMBOL', 'id':'symbol'},
                 {'name':'LTP', 'id':'ltp'},
-                {'name':'Change', 'id':'netPrice'},
-                {'name':'VOLUME', 'id':'tradedQuantity'}]
+                {'name':'Change', 'id':'change'},
+                {'name':'%Change', 'id':'netPrice'}]
 
-    data = [{'symbol': 'ABC', 'ltp' : 789.45, 'netPrice' : 6.51, 'tradedQuantity':45678934 },
-            {'symbol': 'DEF', 'ltp' : 700.45, 'netPrice' : 5.51, 'tradedQuantity':45678934 },
-            {'symbol': 'GHI', 'ltp' : 1400.45, 'netPrice': 4.51, 'tradedQuantity':45678934 },
-            {'symbol': 'JKL', 'ltp' : 1100.45, 'netPrice': 3.51, 'tradedQuantity':45678934 },
-            {'symbol': 'MNO', 'ltp' : 2500.45, 'netPrice': 2.51, 'tradedQuantity':45678934 }]
     for i in data:
-        i["tradedQuantity"] = format(int(i["tradedQuantity"]), ',d')
         i['netPrice'] = str(i['netPrice']) + '%'
     return data, columns
 
@@ -41,6 +36,7 @@ def get_top10_headlines():
     news_requests = requests.get(url)
     json_data = news_requests.json()["articles"][:10]
     return json_data
+
 
 def build_indicator(text, value, reference, background_color):
 

@@ -4,7 +4,7 @@ from assets import studies_options, styles_options
 
 def build_tab1_content(app):
     
-    return html.Div(id = "Tab1_div",#  className="second_div", 
+    return html.Div(id = "Tab1_div",
                     children=[
                         build_left_panel(app),
                         build_right_panel(),
@@ -20,9 +20,8 @@ def build_tab1_content(app):
 
 def build_left_panel(app):
     return  html.Div(className="div_left_panel", children=[
-                build_left_panel_header(app),
+                # build_left_panel_header(app),
                 build_top_movers_div(),
-                # build_headlines_div()
             ])
 
 def build_right_panel():
@@ -65,10 +64,22 @@ def build_left_panel_header(app):
     
 def build_top_movers_div():
     return  html.Div(id='top_movers', children = [
-                html.Div(dcc.Tabs(id='top_movers_tab', value = 'tab1', children=[
-                                        dcc.Tab(label='Gainers', value='tab1', selected_style={'backgroundColor':'#45df7e'}),
-                                        dcc.Tab(label='Losers',  value='tab2', selected_style={'backgroundColor':'#da5657'})])),
-                html.Div(id='top_movers_content')
+                dbc.Row([
+                    dbc.Col(html.H4("Top Gainers", className="top_movers_header")), 
+                    dbc.Col(dbc.DropdownMenu(label="Market", size="sm", children=[
+                            dbc.DropdownMenuItem("Nifty"),
+                            dbc.DropdownMenuItem("Sensex"),
+                    ])),
+                ]),
+                html.Div(id="top_gainers_div"), 
+                dbc.Row([
+                    dbc.Col(html.H4("Top Losers", className="top_movers_header")), 
+                    dbc.Col(dbc.DropdownMenu(label="Market", size="sm", children=[
+                            dbc.DropdownMenuItem("Nifty"),
+                            dbc.DropdownMenuItem("Sensex"),
+                    ])),
+                ]),
+                html.Div(id="top_losers_div")
                 ])
 
 def build_headlines_div():
@@ -88,48 +99,27 @@ def build_indicator_div():
 
 
 def build_chart_div():
-#     return html.Div(dcc.Graph(id="daily_chart",
-#                               config={"displayModeBar": False, "scrollZoom": True},
-#                 ))
-
+    
     studies_items = [dbc.DropdownMenuItem(i["label"]) for i in studies_options]
     styles_items = [dbc.DropdownMenuItem(i["label"]) for i in styles_options]
     return html.Div(id="graph_div", children=[
-            # Menu for Currency Graph
-            html.Div(id="menu", className="not_visible", children=[
-                # stores current menu tab
-                html.Div(id="menu_tab", children=["Studies"], style={"display": "none"} ),
-                html.Span( "Style ", id="style_header", className="span-menu", n_clicks_timestamp=2),
-                html.Span("Studies ", id="studies_header", className="span-menu", n_clicks_timestamp=1),
+            html.Div(id="menu", className="not_visible m-4", children=[
                 # Studies Checklist
                 html.Span(id="menu_button", className="inline-block chart-title", children="☰",n_clicks=0),
-                html.Div(id="studies_tab",children=[
-                        dbc.DropdownMenu(studies_items, label="Studies", size="sm", id="studies", className="graph_dropdown")
-                    ]),
-                # Styles checklist
-                html.Div(id="style_tab", children=[
-                    dbc.DropdownMenu(styles_items, label="Styles", size="sm", id="chart_type", className="graph_dropdown")
-                    ]),
+                dbc.DropdownMenu(studies_items, id="studies_tab", className="graph_dropdown", 
+                                 label="Studies", size="sm"),
+                dbc.DropdownMenu(styles_items, id="style_tab", className="graph_dropdown", 
+                                 label="Styles", size="sm"),
                 ]),
-            # Chart Top Bar
-            html.Div(className="row chart-top-bar", children=[
-                
-                # Dropdown and close button float right
-                html.Div(className="graph-top-right inline-block", children=[
-                    html.Div(className="inline-block", children=[
-                        dcc.Dropdown(className="graph_dropdown", id="dropdown_period", 
-                                        value="15Min", clearable=False, options=[
-                                {"label": "5 min", "value": "5Min"},
-                                {"label": "15 min", "value": "15Min"},
-                                {"label": "30 min", "value": "30Min"},
-                                    ])
-                            ]),
-                #     html.Span(id="close", className="chart-close inline-block float-right",
-                #             children="×", n_clicks=0),
-                    ]),
-            ]),
+
             # Graph div
-            html.Div(dcc.Graph(id="chart",className="chart-graph", 
+            html.Div(dcc.Graph(id="daily_chart", className="chart-graph", 
                                 config={"displayModeBar": False, "scrollZoom": True},
                 )),
+            html.Div(dbc.Checklist(inline=True, options=[
+                {"label": "Price", "value": 1},
+                {"label": "50 DMA", "value": 2},
+                {"label": "200 DMA", "value": 3},
+                {"label": "50 EMA", "value": 4},
+            ]))
         ])

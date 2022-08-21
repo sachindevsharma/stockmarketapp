@@ -1,37 +1,71 @@
 from dash import html, dcc, dash_table, Input, State, Output
 import plotly.graph_objs as go
-from datetime import datetime
 from nsetools import Nse
+import pandas as pd
 from helper_functions import *
 nse = Nse()
 
-loc = 'assets/images/'
+df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/finance-charts-apple.csv')
+
 
 def callbacks_tab1(app):
 
-    @app.callback(Output('top_movers_content', 'children'),
-                 [Input('top_movers_tab', 'value'), Input('i60', 'n_intervals')])
-    def top_movers(tab, n):
-
-        # if tab == 'tab1':
-        #     top_movers = nse.get_top_gainers()[:5]
-        # elif tab == 'tab2': 
-        #     top_movers = nse.get_top_losers()[:5]
-        top_movers = []
-        header_color = '#45df7e' if tab=='tab1' else '#da5657'
+    @app.callback(Output('top_gainers_div', 'children'),
+                  Input('i60', 'n_intervals'))
+    def top_gainers(n):
+        
+        cols = ["symbol", "ltp", "change", "netPrice"]
+        top_movers = nse.get_top_gainers()[:5]
+        for i in top_movers:
+            i["change"] = round(i["ltp"] - i["previousPrice"], 2)
+            
+        top_movers = [{key: i[key] for key in cols} for i in top_movers ]
         data, columns = format_top_movers(top_movers)
-        return [dash_table.DataTable(columns=columns, 
+        top_gainers = [dash_table.DataTable(columns=columns, 
                                      data=data, 
-                                    #  style_table={'overflowX':'scroll'},
-                                     style_header={'backgroundColor': header_color,},
+                                    #  style_header={'backgroundColor': '#45df7e'},
                                      style_cell={'text-align':'center', 
                                                  'backgroundColor': plot_bg_color2, 
-                                                 'color': text_color})]
+                                                 'color': text_color}, 
+                                     style_data_conditional=[
+                                         {"if": {"column_id": "change"}, "color": '#45df7e'}, 
+                                         {"if": {"column_id": "netPrice"}, "color": '#45df7e'}
+                                     ]
+                        )]
+        
+        return top_gainers
+    
+    
+    @app.callback(Output('top_losers_div', 'children'),
+                  Input('i60', 'n_intervals'))
+    def top_losers(n):
+        cols = ["symbol", "ltp", "change", "netPrice"]
+        top_movers = nse.get_top_losers()[:5]
+        for i in top_movers:
+            i["change"] = round(i["ltp"] - i["previousPrice"], 2)
+            
+        top_movers = [{key: i[key] for key in cols} for i in top_movers ]
+        data, columns = format_top_movers(top_movers)
+        
+        top_losers = dash_table.DataTable(columns=columns, 
+                                     data=data, 
+                                    #  style_header={'backgroundColor': '#da5657'},
+                                     style_cell={'text-align':'center', 
+                                                 'backgroundColor': plot_bg_color2, 
+                                                 'color': text_color},
+                                     style_data_conditional=[
+                                         {"if": {"column_id": "change"}, "color": '#da5657'},
+                                         {"if": {"column_id": "netPrice"}, "color": '#da5657'}
+                                     ]
+                                )
+        
+        return top_losers
+        
 
 
     @app.callback([Output('indicator1','figure'), Output('indicator2','figure'),
                    Output('indicator3','figure'), Output('indicator4','figure')],
-                  [Input('i1', 'n_intervals')])
+                  [Input('i60', 'n_intervals')])
     def indicators(n):
         #bg_color = '#30333d'
         bg_color = 'black'
@@ -45,6 +79,38 @@ def callbacks_tab1(app):
         return [fig1, fig2, fig3, fig4]
 
 
+    
+    @app.callback([Output('daily_chart','figure')],
+                  [Input('main_tabs', 'value')])
+    def stock_graph(n):
+        
+        xaxis = dict(
+            rangeselector=dict(
+                buttons=list([
+                    dict(count=1, label="1m", step="month", stepmode="backward"),
+                    dict(count=6, label="6m", step="month", stepmode="backward"),
+                    dict(count=1, label="YTD", step="year", stepmode="todate"),
+                    dict(count=1, label="1Y", step="year", stepmode="backward"),
+                    dict(count=2, label="2Y", step="year", stepmode="backward"),
+                    dict(count=5, label="5Y", step="year", stepmode="backward"),
+                    dict(label="Max", step="all")
+                ])
+            )
+        )
+        # autosize=True, , 
+        layout = go.Layout(  # xaxis = xaxis, 
+                           margin={'t': 40,'l':30,'b':20,'r':15},
+                           template="plotly_dark")
+        
+        fig = {'data' : [go.Scatter(x=df.Date, y=df["AAPL.High"])],
+               'layout': layout
+            }
+        
+        # layout.update_yaxes(
+            # fixedrange=True
+        # )
+
+        return [fig]
     
     
     # @app.callback(Output("orders_table", "children"),

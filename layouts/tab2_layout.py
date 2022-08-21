@@ -1,10 +1,8 @@
 from dash import html, dcc
 
 def build_tab2_content():
-    return html.Div(id='Tab2_div', 
-                    style={'display':'none'}, 
-                    children=[
-                        build_graph()
+    return html.Div(id='Tab2_div', style={'display':'none'}, children=[
+                    build_graph()
             ])
     
 def build_graph():
