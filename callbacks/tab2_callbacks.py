@@ -12,7 +12,6 @@ def callbacks_tab2(app):
     @app.callback([Output('stock_graph','figure')],
                   [Input('main_tabs', 'value')])
     def stock_graph(n):
-        
         xaxis = dict(
             rangeselector=dict(
                 buttons=list([
@@ -26,17 +25,15 @@ def callbacks_tab2(app):
                 ])
             )
         )
-        # autosize=True, , 
-        layout = go.Layout(xaxis = xaxis, margin={'t': 40,'l':30,'b':20,'r':15})
+
+        layout = go.Layout(xaxis = xaxis,
+                           yaxis={"fixedrange": True}, 
+                        #    margin={'t': 40,'l':30,'b':20,'r':15},
+                           template="plotly_dark")
         
         fig = {'data' : [go.Scatter(x=df.Date, y=df["AAPL.High"])],
                'layout': layout
             }
-        
-        # layout.update_yaxes(
-            # fixedrange=True
-        # )
-
         return [fig]
         
 

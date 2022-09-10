@@ -69,6 +69,7 @@ def build_indicator(text, value, reference, background_color):
     #fig.update_layout(autosize=True, margin={'t': 20,'l':0,'b':0,'r':10})
     return [trace1, trace2, trace3]
 
+
 def generate_figure(currency_pair, ask, bid, type_trace, studies, period):
     # Get OHLC data
     data_frame = currency_pair_data[currency_pair]

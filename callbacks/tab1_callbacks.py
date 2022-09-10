@@ -98,7 +98,8 @@ def callbacks_tab1(app):
             )
         )
         # autosize=True, , 
-        layout = go.Layout(  # xaxis = xaxis, 
+        layout = go.Layout(xaxis = xaxis,
+                           yaxis={"fixedrange": True}, 
                            margin={'t': 40,'l':30,'b':20,'r':15},
                            template="plotly_dark")
         
@@ -107,7 +108,7 @@ def callbacks_tab1(app):
             }
         
         # layout.update_yaxes(
-            # fixedrange=True
+        #     fixedrange=True
         # )
 
         return [fig]

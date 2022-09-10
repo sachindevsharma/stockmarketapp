@@ -49,6 +49,10 @@ body {
   box-sizing: border-box
 }
 
+#main_page_container {
+  margin: 0.5vw 1vw
+}
+
 
 .div_left_panel {
   background-color: #22252b;
@@ -206,14 +210,13 @@ body {
 }
 
 .banner button:hover {
-  color: #92e0d3;
+  color: white;
   background-color: var(--color-success);
   border-color: whitesmoke;
 }
 
 .banner Img {
-  height: 3rem;
-  margin: 0px 10px;
+  height: 5vh;
 }
 
 

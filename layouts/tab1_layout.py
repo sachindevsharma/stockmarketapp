@@ -103,7 +103,7 @@ def build_chart_div():
     studies_items = [dbc.DropdownMenuItem(i["label"]) for i in studies_options]
     styles_items = [dbc.DropdownMenuItem(i["label"]) for i in styles_options]
     return html.Div(id="graph_div", children=[
-            html.Div(id="menu", className="not_visible m-4", children=[
+            html.Div(id="menu", className="not_visible", children=[
                 # Studies Checklist
                 html.Span(id="menu_button", className="inline-block chart-title", children="☰",n_clicks=0),
                 dbc.DropdownMenu(studies_items, id="studies_tab", className="graph_dropdown", 
