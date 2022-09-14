@@ -2,64 +2,58 @@ from dash import html, dcc, dash_table, Input, State, Output
 import plotly.graph_objs as go
 from nsetools import Nse
 import pandas as pd
+
 from helper_functions import *
+from sql import TOP_MOVERS
+
 nse = Nse()
 
 df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/finance-charts-apple.csv')
 
 
-def callbacks_tab1(app):
+def callbacks_tab1(app, client):
 
     @app.callback(Output('top_gainers_div', 'children'),
                   Input('i60', 'n_intervals'))
     def top_gainers(n):
         
-        cols = ["symbol", "ltp", "change", "netPrice"]
-        top_movers = nse.get_top_gainers()[:5]
-        for i in top_movers:
-            i["change"] = round(i["ltp"] - i["previousPrice"], 2)
-            
-        top_movers = [{key: i[key] for key in cols} for i in top_movers ]
-        data, columns = format_top_movers(top_movers)
-        top_gainers = [dash_table.DataTable(columns=columns, 
+        df = TOP_MOVERS(client).get_top_gainers()
+        data = df.to_dict(orient='records')
+        table = dash_table.DataTable(columns=[{"name": i, "id": i} for i in df.columns], 
                                      data=data, 
                                     #  style_header={'backgroundColor': '#45df7e'},
                                      style_cell={'text-align':'center', 
                                                  'backgroundColor': plot_bg_color2, 
                                                  'color': text_color}, 
                                      style_data_conditional=[
-                                         {"if": {"column_id": "change"}, "color": '#45df7e'}, 
-                                         {"if": {"column_id": "netPrice"}, "color": '#45df7e'}
+                                         {"if": {"column_id": "Change"}, "color": green_color}, 
+                                         {"if": {"column_id": "% Change"}, "color": green_color}
                                      ]
-                        )]
+                )
         
-        return top_gainers
+        return [table]
     
     
     @app.callback(Output('top_losers_div', 'children'),
                   Input('i60', 'n_intervals'))
     def top_losers(n):
-        cols = ["symbol", "ltp", "change", "netPrice"]
-        top_movers = nse.get_top_losers()[:5]
-        for i in top_movers:
-            i["change"] = round(i["ltp"] - i["previousPrice"], 2)
-            
-        top_movers = [{key: i[key] for key in cols} for i in top_movers ]
-        data, columns = format_top_movers(top_movers)
         
-        top_losers = dash_table.DataTable(columns=columns, 
+        df = TOP_MOVERS(client).get_top_losers()
+        data = df.to_dict(orient='records')
+        
+        table = dash_table.DataTable(columns=[{"name": i, "id": i} for i in df.columns], 
                                      data=data, 
                                     #  style_header={'backgroundColor': '#da5657'},
                                      style_cell={'text-align':'center', 
                                                  'backgroundColor': plot_bg_color2, 
                                                  'color': text_color},
                                      style_data_conditional=[
-                                         {"if": {"column_id": "change"}, "color": '#da5657'},
-                                         {"if": {"column_id": "netPrice"}, "color": '#da5657'}
+                                         {"if": {"column_id": "Change"}, "color": red_color},
+                                         {"if": {"column_id": "% Change"}, "color": red_color}
                                      ]
                                 )
         
-        return top_losers
+        return [table]
         
 
 

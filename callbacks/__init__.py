@@ -5,9 +5,9 @@ from .tab2_callbacks import callbacks_tab2
 from .tab5_callbacks import callbacks_tab5
 
 
-def Callbacks(app):
+def Callbacks(app, client):
     
-    callbacks_tab1(app)
+    callbacks_tab1(app, client)
     callbacks_tab2(app)
     callbacks_tab5(app)
 

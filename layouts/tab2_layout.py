@@ -1,4 +1,5 @@
 from dash import html, dcc
+from helper_functions import build_figure
 
 def build_tab2_content():
     return html.Div(id='Tab2_div', style={'display':'none'}, children=[
@@ -6,7 +7,6 @@ def build_tab2_content():
             ])
     
 def build_graph():
-    return html.Div(id='ind_tab2', children=[
-                         dcc.Graph(id='stock_graph', config={'displayModeBar':False}),
-                        #  dcc.Graph(id='indicator2', className='indicator', config={'displayModeBar':False})
-                ])
+    return html.Div(id='graph_tab2 m-4', children=build_figure("tab2"))
+    
+    

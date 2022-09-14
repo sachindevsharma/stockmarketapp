@@ -1,6 +1,12 @@
 import requests
+from dash import html, dcc
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
+import dash_bootstrap_components as dbc
+import plotly.graph_objs as go
+import pandas as pd
+
+from assets import studies_options, styles_options
 
 
 paper_bg_color = '#1a1c23'
@@ -8,25 +14,8 @@ plot_bg_color  = '#30333d'
 plot_bg_color2 = '#22252b'
 header_color   = '#b2b2b2'
 text_color     = '#ededed'
-
-
-dropdown_values = [
-            {'label': 'New York City', 'value': 'NYC'},
-            {'label': 'Montreal', 'value': 'MTL'},
-            {'label': 'San Francisco', 'value': 'SF'}
-        ]
-
-def format_top_movers(data):
-    '''formatting the top movers data'''
-    
-    columns =  [{'name':'SYMBOL', 'id':'symbol'},
-                {'name':'LTP', 'id':'ltp'},
-                {'name':'Change', 'id':'change'},
-                {'name':'%Change', 'id':'netPrice'}]
-
-    for i in data:
-        i['netPrice'] = str(i['netPrice']) + '%'
-    return data, columns
+green_color    = '#45df7e'
+red_color      = '#da5657'
 
 
 
@@ -68,6 +57,48 @@ def build_indicator(text, value, reference, background_color):
 
     #fig.update_layout(autosize=True, margin={'t': 20,'l':0,'b':0,'r':10})
     return [trace1, trace2, trace3]
+
+
+def build_figure(id_ext):
+    time_options = [dbc.DropdownMenuItem(i) for i in ["1 month", "3 months", "6 months", "1Y", "5Y", "Max"]]
+    studies_items = [dbc.DropdownMenuItem(i["label"]) for i in studies_options]
+    styles_items = [dbc.DropdownMenuItem(i["label"]) for i in styles_options]
+    checklist_options = [{"label": i, "value": i} for i in ["Price", "50 DMA", "200 DMA", "50 EMA"]]
+
+     
+    df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/finance-charts-apple.csv')
+
+    # autosize=True, , 
+    data = [go.Scatter(x=df.Date, y=df["AAPL.High"]), go.Scatter(x=df.Date, y=df["AAPL.High"] + 10)]
+    layout = go.Layout(
+                    yaxis={"fixedrange": True}, 
+                    margin={'t': 40,'l':30,'b':20,'r':15},
+                    template="plotly_dark", 
+                    showlegend=False
+            )
+    
+    fig = {'data' : data, 'layout': layout}
+
+    
+    return [
+        # Studies Checklist
+        html.Div(className="graph_options m-3", children=[
+            html.Span(id=f"menu_button_{id_ext}", className="chart-title", children="☰", n_clicks=0),
+            dbc.DropdownMenu(time_options, id=f"time_options_{id_ext}", className="graph_dropdown", label="Time", size="sm"),
+            dbc.DropdownMenu(studies_items, id=f"studies_tab_{id_ext}", className="graph_dropdown", label="Studies", size="sm"),
+            dbc.DropdownMenu(styles_items, id=f"style_tab_{id_ext}", className="graph_dropdown", label="Styles", size="sm"),
+            
+        ]),
+
+        # Graph div
+        html.Div(dcc.Graph(figure=fig, className="chart-graph", config={"displayModeBar": False, "scrollZoom": True},
+            )),
+        html.Div(dbc.Checklist(inline=True, options=checklist_options, value=["Price", "50 DMA"],
+                               className="align-middle justify-content-center"), 
+                 className="align-middle justify-content-center")
+            
+    ]
+
 
 
 def generate_figure(currency_pair, ask, bid, type_trace, studies, period):

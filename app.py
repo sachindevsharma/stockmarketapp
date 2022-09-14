@@ -5,6 +5,10 @@ from whitenoise import WhiteNoise   #for serving static files on Heroku
 
 from layouts import Layout
 from callbacks import Callbacks
+from sql import MongoConnector
+
+
+client = MongoConnector().connect()
 
 app = Dash(__name__, 
            update_title=None,
@@ -19,7 +23,7 @@ server = app.server
 # server.wsgi_app = WhiteNoise(server.wsgi_app, root='static/') 
 
 app.layout = Layout(app)
-Callbacks(app)
+Callbacks(app, client)
 
 if __name__ == "__main__":
     app.run_server(debug=False, port=8050)

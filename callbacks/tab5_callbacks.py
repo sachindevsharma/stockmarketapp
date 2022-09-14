@@ -9,16 +9,18 @@ def callbacks_tab5(app):
                  [Input('i60', 'n_intervals')])
     def get_headlines(n):
             headlines = get_top10_headlines()
+            print([i["publishedAt"][:10] for i in headlines])
         
             # source (id, author), author, title, description, url, urlToImage, , publishedAt, content
-            urlToImage = headlines[0]
             
             card = dbc.Row([dbc.Card(className="card_div",  color="light", children=[
                         dbc.CardImg(src=item["urlToImage"], top=True),
+                        html.P(item["publishedAt"]),
                         dbc.CardBody([
-                            html.H4(item["title"], className="card-title"),
-                            html.P(item["description"], className="card-text"),
-                            dbc.Button(dbc.CardLink("See News", href=item["url"], class_name="news_card_link"), color="primary"),
+                            html.H5(item["title"], className="text-body"),
+                            html.P(item["description"], className="text-muted"),
+                            dbc.Button(html.A("See News", href=item["url"], target="_blank", className="news_card_link"), 
+                                       color="primary"),
                         ]),
                     ], )
                     for item in headlines])

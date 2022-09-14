@@ -11,7 +11,7 @@ from .tab5_layout import build_tab5_content
 def Layout(app):
 
     return html.Div(id="main_div", children=[
-                build_main_page(),
+                build_main_page(app),
                 html.Div(id='second_div',children=[
                     build_tab1_content(app),
                     build_tab2_content(),
