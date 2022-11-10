@@ -63,8 +63,10 @@ def callbacks_tab1(app, client):
     def indicators(n):
         #bg_color = '#30333d'
         bg_color = 'black'
-        layout = {'autosize':True, 'margin':{'t': 20,'l':0,'b':0,'r':10}, 
-                  'plot_bgcolor': bg_color, 'paper_bgcolor': bg_color}
+        layout = {'autosize':True, 
+                  'margin':{'t': 20,'l':0,'b':0,'r':10}, 
+                  'plot_bgcolor': bg_color, 
+                  'paper_bgcolor': bg_color}
         fig1 = {'data' : build_indicator('NIFTY', 14928, 14888, bg_color), 'layout': layout  }
         fig2 = {'data' : build_indicator('SENSEX', 50000, 49744, bg_color), 'layout': layout  }
         fig3 = {'data' : build_indicator('NIFTY BANK', 1200, 2300, bg_color), 'layout': layout  }

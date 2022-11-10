@@ -23,7 +23,7 @@ red_color      = '#da5657'
 def get_top10_headlines():
     url = "https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=da8e2e705b914f9f86ed2e9692e66012"
     news_requests = requests.get(url)
-    json_data = news_requests.json()["articles"][:10]
+    json_data = news_requests.json()["articles"][:20]
     return json_data
 
 

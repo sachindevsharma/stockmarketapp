@@ -9,7 +9,6 @@ def callbacks_tab5(app):
                  [Input('i60', 'n_intervals')])
     def get_headlines(n):
             headlines = get_top10_headlines()
-            print([i["publishedAt"][:10] for i in headlines])
         
             # source (id, author), author, title, description, url, urlToImage, , publishedAt, content
             

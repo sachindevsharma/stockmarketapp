@@ -1,11 +1,12 @@
+
+import dash
 from dash import html, dcc
 import dash_bootstrap_components as dbc
 from helper_functions import build_figure
 
 
-def build_tab1_content(app):
-    
-    return html.Div(id = "Tab1_div",children=[
+def build_tab1_content():
+    layout = html.Div(id = "Tab1_div",children=[
             html.Div(className="div_left_panel", children=[
                 build_top_movers_div(),
             ]), 
@@ -14,6 +15,9 @@ def build_tab1_content(app):
                 build_chart_div()
             ])
         ])
+    return layout
+
+
 
 
 def build_left_panel_header(app):
@@ -33,18 +37,18 @@ def build_top_movers_div():
     return  html.Div(id='top_movers', children = [
                 dbc.Row([
                     dbc.Col(html.H4("Top Gainers", className="top_movers_header")), 
-                    dbc.Col(dbc.DropdownMenu(label="Market", size="sm", children=[
-                            dbc.DropdownMenuItem("Nifty"),
-                            dbc.DropdownMenuItem("Sensex"),
-                    ])),
+                    dbc.Col(className="top_movers_tab", children=[
+                            dbc.Button("NSE", color="secondary", className="ms-0", n_clicks=0, size="sm"),
+                            dbc.Button("BSE", color="secondary", className="ms-0", n_clicks=0, size="sm")
+                            ])
                 ]),
                 html.Div(id="top_gainers_div"), 
                 dbc.Row([
                     dbc.Col(html.H4("Top Losers", className="top_movers_header")), 
-                    dbc.Col(dbc.DropdownMenu(label="Market", size="sm", children=[
-                            dbc.DropdownMenuItem("Nifty"),
-                            dbc.DropdownMenuItem("Sensex"),
-                    ])),
+                    dbc.Col(className="top_movers_tab", children=[
+                            dbc.Button("NSE", color="secondary", className="ms-0", n_clicks=0, size="sm"),
+                            dbc.Button("BSE", color="secondary", className="ms-0", n_clicks=0, size="sm")
+                            ])
                 ]),
                 html.Div(id="top_losers_div")
                 ])
@@ -61,3 +65,4 @@ def build_indicator_div():
 
 def build_chart_div():
     return html.Div(id='graph_tab1', children=build_figure("tab1"))
+

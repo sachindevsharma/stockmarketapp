@@ -1,10 +1,12 @@
 from pymongo import MongoClient
+import os
 
     
 class MongoConnector:
     
     def connect(self):
-        client = MongoClient("mongodb+srv://admin:admin@stocks.cfrrxev.mongodb.net/?retryWrites=true&w=majority")
+        MONGO_URL = os.environ.get("MONGO_URL")
+        client = MongoClient(MONGO_URL)
         return client
     
     def get_database(self, db):
